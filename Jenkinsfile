@@ -33,6 +33,7 @@ pipeline {
   stages {
     stage('Build On slave1') {
 	when {
+		beforeAgent true;
 	    expression {
             return P_SLAVE1.toString()!='NULL';
         }        
@@ -55,7 +56,8 @@ pipeline {
 	
 	}
 	stage('Build On slave2') {
-	when {beforeAgent true;
+	when {
+		beforeAgent true;
 	    expression {
             return P_SLAVE2.toString()!='NULL';
         }        
@@ -82,7 +84,8 @@ pipeline {
     stage('Tests') {
 		parallel {
 			stage('UC01') {
-				when {beforeAgent true;
+				when {
+					beforeAgent true;
 					expression {
 						return P_UC01.toString()!='NULL';
 					}        
@@ -102,6 +105,7 @@ pipeline {
 			
 			stage('UC02') {
 				when {
+					beforeAgent true;
 					expression {
 						return P_UC02.toString()!='NULL';
 					}        
@@ -112,7 +116,7 @@ pipeline {
 				steps {				
 					script {					
 			  
-						  sh './test.sh UC02_run'
+						  sh './test.sh UC_251_NEWFILE_run'
 						
 					}
 				
