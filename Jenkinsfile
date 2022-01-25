@@ -97,12 +97,14 @@ pipeline {
 			    agent {
                    label 'slave1'
                 }
-				steps {				
-					script {					
-						if(P_UC01.toString()=='slave1'){			  
-						  sh './test.sh UC01_run'
+				steps {	
+					parallel(
+						script {					
+							if(P_UC01.toString()=='slave1'){			  
+							  sh './test.sh UC01_run'
+							}
 						}
-					}
+					)
 				
 				}
 			}
@@ -111,7 +113,7 @@ pipeline {
 				when {
 					beforeAgent true;
 					expression {
-						return P_SLAVE1.toString()!='NULL';
+						return P_SLAVE2.toString()!='NULL';
 					}        
 				}
 			    agent {
