@@ -82,7 +82,7 @@ pipeline {
     stage('Tests') {
 		parallel {
 			stage('UC01') {
-				when {
+				when {beforeAgent true;
 					expression {
 						return P_UC01.toString()!='NULL';
 					}        
