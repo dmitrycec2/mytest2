@@ -30,10 +30,11 @@ echo "jmeter args=$@"
 T_DIR=${2}
 R_DIR=${3}
 echo "------------"+${T_DIR}
+echo "-------------wait---------------"
 #if [ $1 = "UC_251_NEWFILE_run" ]; then
 
 echo "-------------wait---------------"
-sleep 5
+
 
 
 echo "-------------wait---------------${T_DIR}/${1}"
