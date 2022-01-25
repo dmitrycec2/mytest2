@@ -30,8 +30,8 @@ echo "jmeter args=$@"
 T_DIR=${2}
 R_DIR=${3}
 echo "------------"+${T_DIR}
-if [ $1 = "UC02_run" ]; then
+#if [ $1 = "UC02_run" ]; then
 chmod +x ${T_DIR}/UC02_run
 ${T_DIR}/UC02_run ${T_DIR} ${R_DIR} ${JVM_ARGS}
-fi
+#fi
 #wait -n
