@@ -1,19 +1,19 @@
 def BRANCH_NAME = 'main'
-def parallelNodes() {
-    List<String> nodes = ['slave1']
-    Map<String, Object> pipelines = [:]
-    nodes.each { String name ->
-        pipelines[name] = {
-                node('slave1') {
-                    stage(name) {
-                        script {
-							sh './test.sh UC01_run'
-                        }
-                    }
-                }           
-        }
+def tasks = [:]
+
+tasks["task_1"] = {
+  stage ("task_1"){    
+    node('slave1') {  
+        sh 'echo ---------------- $NODE_NAME'
     }
-    return pipelines
+  }
+}
+tasks["task_2"] = {
+  stage ("task_2"){    
+    node('slave1') {  
+        sh 'echo ------------- $NODE_NAME'
+    }
+  }
 }
 pipeline {
   parameters { // {
@@ -118,7 +118,7 @@ pipeline {
 						
 							script {					
 								if(P_UC01.toString()=='slave1'){
-									parallel(parallelNodes())								
+									parallel tasks								
 								
 								}
 							}
