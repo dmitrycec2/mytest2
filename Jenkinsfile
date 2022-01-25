@@ -1,4 +1,20 @@
 def BRANCH_NAME = 'main'
+def parallelNodes() {
+    List<String> nodes = ['slave1']
+    Map<String, Object> pipelines = [:]
+    nodes.each { String name ->
+        pipelines[name] = {
+                node('slave1') {
+                    stage(name) {
+                        script {
+							sh './test.sh UC01_run'
+                        }
+                    }
+                }           
+        }
+    }
+    return pipelines
+}
 pipeline {
   parameters { // {
     choice(
@@ -97,18 +113,18 @@ pipeline {
 			    agent {
                    label 'slave1'
                 }
-				 stage('test111') {
-						steps {	
-							
-								script {					
-									if(P_UC01.toString()=='slave1'){			  
-									sh './test.sh UC01_run'
-									}
-								}
-							
+				
+					steps {	
 						
-						}
-				}
+							script {					
+								if(P_UC01.toString()=='slave1'){
+									parallel(parallelNodes())								
+								
+								}
+							}
+						
+					
+					}
 			}
 			
 			stage('Test On slave2') {
