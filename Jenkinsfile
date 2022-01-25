@@ -66,7 +66,7 @@ pipeline {
 					}        
 				}
 			    agent {
-                   label ${P_UC01}
+                   label "${P_UC01}"
                 }
 				steps {				
 					script {				
@@ -85,7 +85,7 @@ pipeline {
 					}        
 				}
 			    agent {
-                   label ${P_UC02}
+                   label "${P_UC02}"
                 }
 				steps {				
 					script {					
