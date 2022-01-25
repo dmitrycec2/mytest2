@@ -20,7 +20,6 @@ s=$(($freeMem/10*8))
 x=$(($freeMem/10*8))
 n=$(($freeMem/10*2))
 export JVM_ARGS="-Xmn${n}m -Xms${s}m -Xmx${x}m"
-echo "rrrrrrrrrrrrrrrrrrr"
 echo "START Running Jmeter on `date`"
 echo "JVM_ARGS=${JVM_ARGS}"
 echo "jmeter args=$@"
@@ -29,19 +28,11 @@ echo "jmeter args=$@"
 #jmeter $@
 T_DIR=${2}
 R_DIR=${3}
-echo "-------------wait---------------"
+
 echo "------------"+${T_DIR}
-echo "-------------wait---------------"
+
 #if [ $1 = "UC_251_NEWFILE_run" ]; then
-
-echo "-------------wait---------------"
-
-
-
-echo "-------------wait---------------${T_DIR}/${1}"
-sleep 5
-
 chmod +x ${T_DIR}/${1}
-sh ${T_DIR}/${1} ${T_DIR} ${R_DIR} ${JVM_ARGS}
+{T_DIR}/${1} ${T_DIR} ${R_DIR} ${JVM_ARGS}
 #fi
 #wait -n
