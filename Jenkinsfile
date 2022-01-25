@@ -4,12 +4,12 @@ pipeline {
     choice(
       name: 'P_SLAVE1',
       description: '',
-      choices: ['NULL', 'true'] as List
+      choices: ['NULL', 'enable'] as List
     )
     choice(
       name: 'P_SLAVE2',
       description: '',
-      choices: ['NULL', 'true'] as List
+      choices: ['NULL', 'enable'] as List
     )
     choice(
       name: 'P_UC01',
@@ -66,7 +66,7 @@ pipeline {
 					}        
 				}
 			    agent {
-                   label '${P_UC01}'
+                   label ${P_UC01}
                 }
 				steps {				
 					script {				
@@ -85,7 +85,7 @@ pipeline {
 					}        
 				}
 			    agent {
-                   label '${P_UC02}'
+                   label ${P_UC02}
                 }
 				steps {				
 					script {					
