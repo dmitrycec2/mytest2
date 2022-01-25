@@ -4,14 +4,23 @@ pipeline {
     choice(
       name: 'P_SLAVE1',
       description: '',
-      choices: ['NULL', 'UC_251_NEWFILE_run'] as List
+      choices: ['NULL', 'true'] as List
     )
     choice(
       name: 'P_SLAVE2',
       description: '',
-      choices: ['NULL', 'UC_251_NEWFILE_run'] as List
+      choices: ['NULL', 'true'] as List
     )
-	
+    choice(
+      name: 'P_UC01',
+      description: '',
+      choices: ['NULL', 'slave1'] as List
+    )	
+    choice(
+      name: 'P_UC02',
+      description: '',
+      choices: ['NULL', 'slave1'] as List
+    )	
   } // }
   agent none
   options {
@@ -72,39 +81,39 @@ pipeline {
 	
     stage('Tests') {
 		parallel {
-			stage('Test On slave1') {
+			stage('UC01') {
 				when {
 					expression {
-						return P_SLAVE1.toString()!='NULL';
+						return P_UC01.toString()!='NULL';
 					}        
 				}
 			    agent {
-                   label 'slave1'
+                   label '${P_UC01}'
                 }
 				steps {				
 					script {				
 			  
-						  sh './test.sh ${P_SLAVE1}'
+						  sh './test.sh UC01_run'
 						
 					}
 				
 				}
 			}
 			
-			stage('Test On slave2') {
+			stage('UC02') {
 				when {
 					expression {
-						return P_SLAVE2.toString()!='NULL';
+						return P_UC02.toString()!='NULL';
 					}        
 				}
 			    agent {
-                   label 'slave2'
+                   label '${P_UC02}'
                 }
 				steps {				
 					script {					
-						if(P_SLAVE1.toString()!='NULL'){			  
-						  sh './test.sh ${P_SLAVE2}'
-						}
+			  
+						  sh './test.sh UC02_run'
+						
 					}
 				
 				}
