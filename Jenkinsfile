@@ -117,10 +117,10 @@ pipeline {
 					steps {	
 						
 							script {					
-								if(P_UC01.toString()=='slave1'){
+								
 									parallel tasks								
 								
-								}
+								
 							}
 						
 					
