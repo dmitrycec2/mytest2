@@ -111,7 +111,7 @@ pipeline {
 				when {
 					beforeAgent true;
 					expression {
-						return P_SLAVE2.toString()!='NULL';
+						return P_SLAVE1.toString()!='NULL';
 					}        
 				}
 			    agent {
