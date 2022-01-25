@@ -87,41 +87,41 @@ pipeline {
 	
     stage('Tests') {
 		parallel {
-			stage('UC01') {
+			stage('Test On slave1') {
 				when {
 					beforeAgent true;
 					expression {
-						return P_UC01.toString()!='NULL';
+						return P_SLAVE1.toString()!='NULL';
 					}        
 				}
 			    agent {
-                   label "${P_UC01}"
+                   label 'slave1'
                 }
 				steps {				
-					script {				
-			  
-						  sh './test.sh UC01_run'
-						
+					script {					
+						if(P_UC02.toString()=='slave1'){			  
+						  sh './test.sh UC02_run'
+						}
 					}
 				
 				}
 			}
 			
-			stage('UC02') {
+			stage('Test On slave2') {
 				when {
 					beforeAgent true;
 					expression {
-						return P_UC02.toString()!='NULL';
+						return P_SLAVE2.toString()!='NULL';
 					}        
 				}
 			    agent {
-                   label "${P_UC02}"
+                   label 'slave2'
                 }
 				steps {				
 					script {					
-			  
-						  sh './test.sh UC02_run'
-						
+						if(P_SLAVE1.toString()!='NULL'){			  
+						  sh './test.sh ${P_SLAVE2}'
+						}
 					}
 				
 				}
