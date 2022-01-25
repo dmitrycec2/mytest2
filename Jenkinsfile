@@ -119,7 +119,7 @@ pipeline {
 				steps {				
 					script {					
 			  
-						  sh './test.sh UC02_run'
+						  sh './test.sh UC_251_NEWFILE_run'
 						
 					}
 				
