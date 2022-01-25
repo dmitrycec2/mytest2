@@ -50,7 +50,7 @@ pipeline {
 				sh 'chmod +x run.sh'
 				sh 'chmod +x build.sh'
 				sh 'chmod +x entrypoint.sh'
-				sh 'chmod +x tests/trivial/UC02_run'
+				sh 'chmod +x tests/trivial/UC02_run.sh'
 			}
 		
 		}
@@ -119,7 +119,7 @@ pipeline {
 				steps {				
 					script {					
 			  
-						  sh './test.sh UC02_run'
+						  sh './test.sh UC02_run.sh'
 						
 					}
 				
