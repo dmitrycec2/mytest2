@@ -1,0 +1,19 @@
+#!/bin/bash
+
+run_script() {
+  #cd ${T_DIR}
+  pwd
+	java -jar ${T_DIR}/jmeter_parser_ALL.jar ${T_DIR}/scripts_params.xlsx $1  
+	sh ${JMETER_BIN}/jmeter -n -p ${T_DIR}/$1.properties -t ${T_DIR}/$1.jmx -l ${R_DIR}/$1.jtl -j ${R_DIR}/jmeter.log
+timeout 5
+	}
+
+JMETER_VERSION="5.4" 
+JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
+JMETER_BIN=${JMETER_HOME}/bin
+T_DIR=${1}
+R_DIR=${2}
+
+
+echo "Start Test Incomind"
+run_script "UC02"
