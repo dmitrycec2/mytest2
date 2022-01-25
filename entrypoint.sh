@@ -29,6 +29,7 @@ echo "jmeter args=$@"
 #jmeter $@
 T_DIR=${2}
 R_DIR=${3}
+echo "-------------wait---------------"
 echo "------------"+${T_DIR}
 echo "-------------wait---------------"
 #if [ $1 = "UC_251_NEWFILE_run" ]; then
