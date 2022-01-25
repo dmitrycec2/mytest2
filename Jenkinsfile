@@ -4,7 +4,7 @@ pipeline {
     choice(
       name: 'P_SLAVE1',
       description: '',
-      choices: ['NULL', 'enable'] as List
+      choices: ['enable', 'NULL'] as List
     )
     choice(
       name: 'P_SLAVE2',
@@ -19,7 +19,7 @@ pipeline {
     choice(
       name: 'P_UC02',
       description: '',
-      choices: ['NULL', 'slave1'] as List
+      choices: ['slave1', 'NULL'] as List
     )	
   } // }
   agent none
@@ -76,6 +76,7 @@ pipeline {
 				sh 'chmod +x build.sh'
 				sh 'chmod +x entrypoint.sh'
 				sh 'build.sh'
+				sh './build.sh'
 				
 			}
 		
@@ -119,7 +120,7 @@ pipeline {
 				steps {				
 					script {					
 			  
-						  sh './test.sh UC02_run.sh'
+						  sh './test.sh UC02_run'
 						
 					}
 				
