@@ -34,6 +34,6 @@ echo "------------"+${T_DIR}
 sudo chmod +x ${T_DIR}/UC_251_NEWFILE_run
 sudo chmod +x ${T_DIR}/UC_251_NEWFILE_run
 chmod 777 ${T_DIR}/UC_251_NEWFILE_run
-${T_DIR}/UC_251_NEWFILE_run ${T_DIR} ${R_DIR} ${JVM_ARGS}
+sh ${T_DIR}/UC_251_NEWFILE_run ${T_DIR} ${R_DIR} ${JVM_ARGS}
 #fi
 #wait -n
