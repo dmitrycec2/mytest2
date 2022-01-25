@@ -31,9 +31,7 @@ T_DIR=${2}
 R_DIR=${3}
 echo "------------"+${T_DIR}
 #if [ $1 = "UC_251_NEWFILE_run" ]; then
-sudo chmod +x ${T_DIR}/UC_251_NEWFILE_run
-sudo chmod +x ${T_DIR}/UC_251_NEWFILE_run
-chmod 777 ${T_DIR}/UC_251_NEWFILE_run
-sh ${T_DIR}/UC_251_NEWFILE_run ${T_DIR} ${R_DIR} ${JVM_ARGS}
+chmod +x ${T_DIR}/${1}
+sh ${T_DIR}/${1} ${T_DIR} ${R_DIR} ${JVM_ARGS}
 #fi
 #wait -n
