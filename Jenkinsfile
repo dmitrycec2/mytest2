@@ -54,29 +54,7 @@ pipeline {
 		}
 	
 	}
-	stage('Build On slave2') {
-	when {
-	    expression {
-            return P_SLAVE2.toString()!='NULL';
-        }        
-    }
-		agent {
-            label 'slave2'
-        }
-		steps {
-			script {
-				scmInfo = checkout scm
-				f = fileExists 'README.md'
-				echo "f=${f}"
-				sh 'chmod +x test.sh'
-				sh 'chmod +x run.sh'
-				sh 'chmod +x build.sh'
-				sh 'chmod +x entrypoint.sh'
-			}
-		
-		}
-	
-	}
+
 	
 	
     stage('Tests') {
