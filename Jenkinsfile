@@ -99,8 +99,8 @@ pipeline {
                 }
 				steps {				
 					script {					
-						if(P_UC02.toString()=='slave1'){			  
-						  sh './test.sh UC02_run'
+						if(P_UC01.toString()=='slave1'){			  
+						  sh './test.sh UC01_run'
 						}
 					}
 				
@@ -115,12 +115,12 @@ pipeline {
 					}        
 				}
 			    agent {
-                   label 'slave2'
+                   label 'slave1'
                 }
 				steps {				
 					script {					
-						if(P_SLAVE1.toString()!='NULL'){			  
-						  sh './test.sh ${P_SLAVE2}'
+						if(P_UC02.toString()!='NULL'){			  
+						  sh './test.sh UC02_run'
 						}
 					}
 				
