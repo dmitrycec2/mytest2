@@ -16,4 +16,4 @@ R_DIR=${2}
 
 
 echo "Start Test Incomind"
-run_script "UC02"
+run_script "UC01"
