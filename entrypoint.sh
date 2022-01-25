@@ -31,9 +31,15 @@ T_DIR=${2}
 R_DIR=${3}
 echo "------------"+${T_DIR}
 #if [ $1 = "UC_251_NEWFILE_run" ]; then
-chmod +x ${T_DIR}/${1}
+
 echo "-------------wait---------------"
 sleep 5
+
+
+echo "-------------wait---------------${T_DIR}/${1}"
+sleep 5
+
+chmod +x ${T_DIR}/${1}
 sh ${T_DIR}/${1} ${T_DIR} ${R_DIR} ${JVM_ARGS}
 #fi
 #wait -n
