@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Script Description" enabled="false">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="script">/**
+Имя скрипта: UC02 (Старое имя: Scenario03)
+Имя сценария: Создание Входящего документа (ВХ)
+
+Описание скрипта:
+1. Скрипт оформлен по регламенту - http://conf.sibintek.ru/pages/viewpage.action?pageId=24477770
+2. Все основные настроечные переменные вида &quot;temp_имяПеременной&quot; вынесены в отдельный список и находятся внутри конфига &quot;set_sys_props_testData - temporary&quot;. При настройке запуска скрипта можно использовать их, либо подкладывать в параметры запуска файл с переменными среды вида &quot;ksed_имяПеременной&quot;. Имена переменных полностью соответствуют друг другу, отличаются только префиксы. Параметры вида &quot;param_имяПременной&quot; менять напрямую запрещено.
+3. Логин вынесен в отдельный модуль. Скрипт к нему обращается через Include Controller
+4. В скрипте есть Loop Controller, в который обернуты все транзакции, кроме логина и загрузки главной страницы. Для его настройки заведен отдельный параметр - &quot;temp_iterationCount&quot;.
+5. В скрипте есть ряд запросов после логина, которые вынесены в parallel controller и выключены.
+6. Скрипт использует listeners для отправки запросов в influx, а также записи ошибок в отдельный лог файл (в конце тест-плана).
+7. Для работы скрипту нужны дополнительные параметры:
+	* список адресатов (UsernameAdresat) - берутся из файла параметров
+8. Скрипт использует средство динамического создания файлов в элементе &quot;create_new_file_dynamic_${__threadNum}&quot;. В конце итерации эти файлы удаляются при помощи тест-элемента JSR - deleteFile_${__threadNum}.
+9. Скрипт в своей работе использует очередь.
+	* Получение параметра из очереди: нет.
+	* Отправка параметра в очередь: есть, выполняется в конце итерации. Название очереди from_UC02_${login}. Отправляется созданный документ на регистрацию. На каждой итерации каждый поток отправляет документ в одну очередь на каждой итерации цикла.
+10. В скрипт интегрировано: 
+	* средство автоматического наполнения очереди: [ссылка на страницу с описанием работы]. 
+	* модули: login include_module. 
+Для его работы требуется указывать и держать в актуальном виде следующие параметры: 
+	* protocol, host, port, host_and_port - адрес тестового стенда
+	* IterationCount - количество итераций в loop controller
+	* temp_targetConcurrency - количество потоков
+	* temp_rampUpTime - период, в течение которого запускаются потоки
+	* temp_rampUpStepsCount - количество ступеней запуска всех потоков
+	* temp_holdTargetRateTime - время работы теста
+	* percent - пейсинг
+	* UsernameAdresat - логины адресатов
+	* /listoffer?param=from_UC02_${login}&amp;value=${NewDocGUID} - запрос в очередь, отправляющий nodeRef созданного документа в очередь, где ключ - логин текущего пользователя, т.е. создателя документа.
+11. Скрипт использует средство автонаполнения очереди - http://conf.sibintek.ru/pages/viewpage.action?pageId=26216183
+
+------------------------------------------------------------
+Дата создания: 03/02/2021 (дата последнего изменения старого скрипта)
+Релиз: 4.5.7.1-02.02.2021
+Скрипт создан: Тихонова Дарья TikhonovaDA@sibintek.ru
+
+
+------------------------------------------------------------
+Дата изменения: 12/02/2021
+Релиз: 4.5.7.1-2021.02.09
+Скрипт изменен: Тихонова Дарья TikhonovaDA@sibintek.ru
+Список внесенных изменений:
+1. Скрипт переоформлен согласно новому регламенту: http://conf.sibintek.ru/pages/viewpage.action?pageId=24477770
+2. Изменены названия транзакций согласно таблице: http://conf.sibintek.ru/pages/viewpage.action?pageId=24481722
+
+
+------------------------------------------------------------
+Дата изменения: 20/02/2021
+Релиз: 4.5.7.1-2021.02.09
+Скрипт изменен: Тихонова Дарья TikhonovaDA@sibintek.ru
+Список внесенных изменений:
+1. В скрипт внесен раздел с описанием скрипта согласно регламенту: http://conf.sibintek.ru/pages/viewpage.action?pageId=24477770
+2. Изменен принцип получения имени файла, загружаемого в КСЭД в качестве вложения. Название файла берется при его генерации из ответа на запрос * create_new_file_dynamic_${__threadNum}
+3. Переменная percent вынесена в пользовательские переменные, ранее использовавшийся конфигурационный файл деактивирован до решения проблемы с получением значения данной переменной из файла
+
+
+--------------------------------------------------------
+Дата изменения: 25/03/2021
+Релиз: 4.5.7.1-2021.03.11
+Скрипт изменен: Тихонова Дарья tikhonovada@sibintek.ru
+Список внесенных изменений:
+1. Добавлено средство автонаполнения очереди: http://conf.sibintek.ru/pages/viewpage.action?pageId=26216183
+
+
+--------------------------------------------------------
+Дата изменения: 26/03/2021
+Релиз: 4.5.7.1-2021.03.11
+Скрипт изменен: Тихонова Дарья tikhonovada@sibintek.ru
+Список внесенных изменений:
+1. Добавлен OnceOnlyController
+2. Хост, порт и протокол nfluxdb вынесены в influx_configurations
+3. Изменен адрес очереди на 172.30.48.251
+
+
+--------------------------------------------------------
+Дата изменения: 05/04/2021
+Релиз: 4.5.7.1-2021.03.11
+Скрипт изменен: Тихонова Дарья tikhonovada@sibintek.ru
+Список внесенных изменений:
+1. Добавлена переменная param_AFTestRunTime (общее время работы скрипта во время следующего теста) для расчета количества документов средством автонаполнения. Данная переменная при расчете заменила собой переменную param_holdTargetRateTime
+2. Закомментировано условие if (!param_AFFlag) return в JSR - AF_setup, чтобы скрипт работал при флаге param_AFFlag = false  обычном режиме 
+
+
+--------------------------------------------------------
+*/</stringProp>
+      </JSR223PreProcessor>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="---------------------------------------------------------" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </Arguments>
+      <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="network config" enabled="true">
+        <stringProp name="delimiter">,</stringProp>
+        <stringProp name="fileEncoding"></stringProp>
+        <stringProp name="filename">./datapool_general/Network_config.csv</stringProp>
+        <boolProp name="ignoreFirstLine">false</boolProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">true</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="variableNames">protocol,host,port,host_and_port</stringProp>
+      </CSVDataSet>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="queue_configurations" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="queue_host" elementType="Argument">
+            <stringProp name="Argument.name">queue_host</stringProp>
+            <stringProp name="Argument.value">172.30.48.251</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="queue_port" elementType="Argument">
+            <stringProp name="Argument.name">queue_port</stringProp>
+            <stringProp name="Argument.value">8088</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="delay_time" elementType="Argument">
+            <stringProp name="Argument.name">delay_time</stringProp>
+            <stringProp name="Argument.value">120000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="check_number" elementType="Argument">
+            <stringProp name="Argument.name">check_number</stringProp>
+            <stringProp name="Argument.value">5</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="influx_configurations" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="influx_protocol" elementType="Argument">
+            <stringProp name="Argument.name">influx_protocol</stringProp>
+            <stringProp name="Argument.value">http</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="influx_host" elementType="Argument">
+            <stringProp name="Argument.name">influx_host</stringProp>
+            <stringProp name="Argument.value">172.30.48.19</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="influx_port" elementType="Argument">
+            <stringProp name="Argument.name">influx_port</stringProp>
+            <stringProp name="Argument.value">8086</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">If there is no port, remove &quot;:&quot; from Backend Listener</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="---------------------------------------------------------" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </Arguments>
+      <hashTree/>
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${host}</stringProp>
+        <stringProp name="HTTPSampler.port">${port}</stringProp>
+        <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+        <stringProp name="HTTPSampler.path"></stringProp>
+        <stringProp name="HTTPSampler.concurrentPool">6</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout">600000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">600000</stringProp>
+      </ConfigTestElement>
+      <hashTree/>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+        <collectionProp name="CookieManager.cookies"/>
+        <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+        <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+      </CookieManager>
+      <hashTree/>
+      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager" enabled="true">
+        <boolProp name="clearEachIteration">true</boolProp>
+        <boolProp name="useExpires">true</boolProp>
+        <boolProp name="CacheManager.controlledByThread">false</boolProp>
+      </CacheManager>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="---------------------------------------------------------" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="set_sys_props_testData - temporary" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="temp_targetConcurrency" elementType="Argument">
+            <stringProp name="Argument.name">temp_targetConcurrency</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">12</stringProp>
+          </elementProp>
+          <elementProp name="temp_rampUpTime" elementType="Argument">
+            <stringProp name="Argument.name">temp_rampUpTime</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.desc">3600 sec</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_rampUpStepsCount" elementType="Argument">
+            <stringProp name="Argument.name">temp_rampUpStepsCount</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">4</stringProp>
+          </elementProp>
+          <elementProp name="temp_holdTargetRateTime" elementType="Argument">
+            <stringProp name="Argument.name">temp_holdTargetRateTime</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.desc">sec</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_pacingTargetThroughput" elementType="Argument">
+            <stringProp name="Argument.name">temp_pacingTargetThroughput</stringProp>
+            <stringProp name="Argument.value">20</stringProp>
+            <stringProp name="Argument.desc">sec</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_testID" elementType="Argument">
+            <stringProp name="Argument.name">temp_testID</stringProp>
+            <stringProp name="Argument.value">250121_01</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_docxParams" elementType="Argument">
+            <stringProp name="Argument.name">temp_docxParams</stringProp>
+            <stringProp name="Argument.value">15-20KB,10%;20-25,15%;25-30,25%;35-40,50%</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_docParams" elementType="Argument">
+            <stringProp name="Argument.name">temp_docParams</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_xlsxParams" elementType="Argument">
+            <stringProp name="Argument.name">temp_xlsxParams</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_xlsParams" elementType="Argument">
+            <stringProp name="Argument.name">temp_xlsParams</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_pdfParams" elementType="Argument">
+            <stringProp name="Argument.name">temp_pdfParams</stringProp>
+            <stringProp name="Argument.value">0</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_AFFlag" elementType="Argument">
+            <stringProp name="Argument.name">temp_AFFlag</stringProp>
+            <stringProp name="Argument.value">false</stringProp>
+            <stringProp name="Argument.desc">flag Auto Fill</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_AFTestRunTime" elementType="Argument">
+            <stringProp name="Argument.name">temp_AFTestRunTime</stringProp>
+            <stringProp name="Argument.value">43200</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="get_sys_props_testData" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="param_targetConcurrency" elementType="Argument">
+            <stringProp name="Argument.name">param_targetConcurrency</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_targetConcurrency, param_targetConcurrency, ${temp_targetConcurrency})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_rampUpTime" elementType="Argument">
+            <stringProp name="Argument.name">param_rampUpTime</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_rampUpTime, param_rampUpTime, ${temp_rampUpTime})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_rampUpStepsCount" elementType="Argument">
+            <stringProp name="Argument.name">param_rampUpStepsCount</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_rampUpStepsCount, param_rampUpStepsCount, ${temp_rampUpStepsCount})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_holdTargetRateTime" elementType="Argument">
+            <stringProp name="Argument.name">param_holdTargetRateTime</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_holdTargetRateTime, param_holdTargetRateTime, ${temp_holdTargetRateTime})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_pacingTargetThroughput" elementType="Argument">
+            <stringProp name="Argument.name">param_pacingTargetThroughput</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_pacingTargetThroughput, param_pacingTargetThroughput, ${temp_pacingTargetThroughput})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_testID" elementType="Argument">
+            <stringProp name="Argument.name">param_testID</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_testID, param_testID, ${temp_testID})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_docxParams" elementType="Argument">
+            <stringProp name="Argument.name">param_docxParams</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_docxParams, param_docxParams, ${temp_docxParams})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_docParams" elementType="Argument">
+            <stringProp name="Argument.name">param_docParams</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_docParams, param_docParams, ${temp_docParams})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_xlsxParams" elementType="Argument">
+            <stringProp name="Argument.name">param_xlsxParams</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_xlsxParams, param_xlsxParams, ${temp_xlsxParams})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_xlsParams" elementType="Argument">
+            <stringProp name="Argument.name">param_xlsParams</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_xlsParams, param_xlsParams, ${temp_xlsParams})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_pdfParams" elementType="Argument">
+            <stringProp name="Argument.name">param_pdfParams</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_pdfParams, pdfParams, ${temp_pdfParams})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_AFFlag" elementType="Argument">
+            <stringProp name="Argument.name">param_AFFlag</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_AFFlag, param_AFFlag, ${temp_AFFlag})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="param_AFTestRunTime" elementType="Argument">
+            <stringProp name="Argument.name">param_AFTestRunTime</stringProp>
+            <stringProp name="Argument.value">${__property(ksed_AFTestRunTime, param_AFTestRunTime, ${temp_AFTestRunTime})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="---------------------------------------------------------" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </Arguments>
+      <hashTree/>
+      <com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup guiclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroupGui" testclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup" testname="TG_UC01" enabled="true">
+        <elementProp name="ThreadGroup.main_controller" elementType="com.blazemeter.jmeter.control.VirtualUserController"/>
+        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
+        <stringProp name="TargetLevel">${param_targetConcurrency}</stringProp>
+        <stringProp name="RampUp">${param_rampUpTime}</stringProp>
+        <stringProp name="Steps">${param_rampUpStepsCount}</stringProp>
+        <stringProp name="Hold">${param_holdTargetRateTime}</stringProp>
+        <stringProp name="LogFilename"></stringProp>
+        <stringProp name="Iterations"></stringProp>
+        <stringProp name="Unit">S</stringProp>
+        <stringProp name="TestPlan.comments">7 10 7
+12 10 4 720
+12 30 4 720 min</stringProp>
+      </com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="UC01_OnceOnlyController" enabled="true"/>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR - set testPlanFileDir" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">log.info(&quot;param_targetConcurrency &quot; + vars.get(&quot;param_targetConcurrency&quot;));
+log.info(&quot;param_rampUpTime &quot; + vars.get(&quot;param_rampUpTime&quot;));</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="pacing_01" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Flow Control - pacing" enabled="true">
+            <intProp name="ActionProcessor.action">1</intProp>
+            <intProp name="ActionProcessor.target">0</intProp>
+            <stringProp name="ActionProcessor.duration">0</stringProp>
+          </TestAction>
+          <hashTree>
+            <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Constant Throughput Timer" enabled="true">
+              <intProp name="calcMode">0</intProp>
+              <stringProp name="throughput">${param_pacingTargetThroughput}</stringProp>
+            </ConstantThroughputTimer>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="UC01-01_Login" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="01" enabled="true">
+            <boolProp name="WAITING">true</boolProp>
+            <boolProp name="SUCCESFULL">true</boolProp>
+            <stringProp name="RESPONSE_CODE">200</stringProp>
+            <stringProp name="RESPONSE_MESSAGE">OK</stringProp>
+            <stringProp name="REQUEST_DATA">request</stringProp>
+            <stringProp name="RESPONSE_DATA">response</stringProp>
+            <stringProp name="RESPONSE_TIME">${__Random(1000,2000)}</stringProp>
+            <stringProp name="LATENCY">${__Random(1,50)}</stringProp>
+            <stringProp name="CONNECT">${__Random(1,5)}</stringProp>
+            <stringProp name="URL"></stringProp>
+            <stringProp name="RESULT_CLASS">org.apache.jmeter.samplers.SampleResult</stringProp>
+          </kg.apc.jmeter.samplers.DummySampler>
+          <hashTree/>
+        </hashTree>
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
+          <boolProp name="displayJMeterProperties">false</boolProp>
+          <boolProp name="displayJMeterVariables">true</boolProp>
+          <boolProp name="displaySystemProperties">false</boolProp>
+        </DebugSampler>
+        <hashTree/>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <boolProp name="ResultCollector.error_logging">true</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>true</responseData>
+            <samplerData>true</samplerData>
+            <xml>true</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>true</responseHeaders>
+            <requestHeaders>true</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <fileName>true</fileName>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">UC02_${__time(,)}.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="false">
+        <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="influxdbMetricsSender" elementType="Argument">
+              <stringProp name="Argument.name">influxdbMetricsSender</stringProp>
+              <stringProp name="Argument.value">org.apache.jmeter.visualizers.backend.influxdb.HttpMetricsSender</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="influxdbUrl" elementType="Argument">
+              <stringProp name="Argument.name">influxdbUrl</stringProp>
+              <stringProp name="Argument.value">${influx_protocol}://${influx_host}:${influx_port}/write?db=jmeter_nt</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="application" elementType="Argument">
+              <stringProp name="Argument.name">application</stringProp>
+              <stringProp name="Argument.value">ksed 02 ${__machineName()}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="measurement" elementType="Argument">
+              <stringProp name="Argument.name">measurement</stringProp>
+              <stringProp name="Argument.value">jmeter</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="summaryOnly" elementType="Argument">
+              <stringProp name="Argument.name">summaryOnly</stringProp>
+              <stringProp name="Argument.value">false</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="samplersRegex" elementType="Argument">
+              <stringProp name="Argument.name">samplersRegex</stringProp>
+              <stringProp name="Argument.value">.*</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="percentiles" elementType="Argument">
+              <stringProp name="Argument.name">percentiles</stringProp>
+              <stringProp name="Argument.value">90;95;99</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="testTitle" elementType="Argument">
+              <stringProp name="Argument.name">testTitle</stringProp>
+              <stringProp name="Argument.value">Test name</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="eventTags" elementType="Argument">
+              <stringProp name="Argument.name">eventTags</stringProp>
+              <stringProp name="Argument.value"></stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="TAG_machine_IP" elementType="Argument">
+              <stringProp name="Argument.name">TAG_machine_IP</stringProp>
+              <stringProp name="Argument.value">${__machineIP}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="TAG_testID" elementType="Argument">
+              <stringProp name="Argument.name">TAG_testID</stringProp>
+              <stringProp name="Argument.value">${param_testID}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="TAG_node_name" elementType="Argument">
+              <stringProp name="Argument.name">TAG_node_name</stringProp>
+              <stringProp name="Argument.value">${__machineName()}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="TAG_script_name" elementType="Argument">
+              <stringProp name="Argument.name">TAG_script_name</stringProp>
+              <stringProp name="Argument.value">UC02</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
+      </BackendListener>
+      <hashTree/>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>false</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>false</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <fileName>true</fileName>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ThreadsStateOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Active Threads Over Time" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">D:\WORK\alrora\ksed-master@bc2a5ed2045\UC02.jtl</stringProp>
+        <longProp name="interval_grouping">500</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ThreadsStateOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Active Threads Over Time" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">D:\WORK\alrora\ksed-master@bc2a5ed2045\UC02.jtl</stringProp>
+        <longProp name="interval_grouping">500</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
