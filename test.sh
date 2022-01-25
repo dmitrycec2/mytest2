@@ -14,7 +14,7 @@ R_DIR=${T_DIR}/report
 rm -rf ${R_DIR} > /dev/null 2>&1
 mkdir -p ${R_DIR}
 pwd
-
+echo "==== 111111111111 ===="
 ./run.sh $1 ${T_DIR} ${R_DIR}
 
 echo "==== jmeter.log ===="
