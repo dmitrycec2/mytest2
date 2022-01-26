@@ -128,9 +128,9 @@ pipeline {
 						echo "Current workspace is ${workspace}"
 						echo "Current workspace "+workspace
 						env.custom_var=workspace
-						currtasks =  prepareStages("slave1")
+						currtasks1 =  prepareStages("slave1")
 							stage('Testt') {
-								parallel currtasks
+								parallel currtasks1
 							}					
 					}	
 				}
@@ -153,9 +153,9 @@ pipeline {
 						echo "Current workspace is ${workspace}"
 						echo "Current workspace "+workspace
 						env.custom_var=workspace
-						currtasks =  prepareStages("slave2")
+						currtasks2 =  prepareStages("slave2")
 							stage('Testt') {
-								parallel currtasks
+								parallel currtasks2
 							}	
 					}
 				
