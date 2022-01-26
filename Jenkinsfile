@@ -6,6 +6,7 @@ tasks["task_1"] = {
     node('slave1') {
 		dir("${workspace}"){
 			sh 'echo ---------------- $NODE_NAME'
+			sh 'echo +++++ ${workspace}'
 			sh './test.sh UC01_run'
 		}
     }
@@ -16,6 +17,7 @@ tasks["task_2"] = {
     node('slave1') {  
 		dir("${workspace}"){
 			sh 'echo ---------------- $NODE_NAME'
+			sh 'echo +++++ ${workspace}'
 			sh './test.sh UC02_run'
 		}
     }
