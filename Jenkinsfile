@@ -132,23 +132,18 @@ pipeline {
 									env.custom_var=workspace
 									
 									
-									        def stages = [:]
-											stages["UC01"] = {												
-												
-
-														sh 'echo ---------------- $NODE_NAME'
-														sh './test.sh UC01_run'
-
-																								
+										stage('Testt') {
+											parallel uc01: {
+												node('slave1') {
+													sh './test.sh UC01_run'
+												}
+											},
+											uc02: {
+												node('slave1') {
+													sh './test.sh UC02_run'
+												}
 											}
-											stages["UC02"] = {												
-
-
-														sh 'echo ---------------- $NODE_NAME'
-														sh './test.sh UC02_run'
-													
-																								
-											}
+										}
 									
 									parallel stages						
 								
