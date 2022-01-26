@@ -148,7 +148,7 @@ pipeline {
 												}
 											}
 									
-									parallel stages								
+									parallel(stages)								
 								
 								
 							}
