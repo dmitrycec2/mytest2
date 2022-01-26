@@ -136,8 +136,7 @@ pipeline {
 											parallel uc01: {
 												node('slave1') {
 														dir("${env.custom_var}"){
-															sh 'echo ---------------- $NODE_NAME'
-															sh 'echo +++++ ${env.custom_var}'
+
 															sh './test.sh UC01_run'
 														}
 												}
@@ -145,8 +144,7 @@ pipeline {
 											uc02: {
 												node('slave1') {
 														dir("${env.custom_var}"){
-															sh 'echo ---------------- $NODE_NAME'
-															sh 'echo +++++ ${env.custom_var}'
+
 															sh './test.sh UC02_run'
 														}
 												}
