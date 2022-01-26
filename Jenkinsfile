@@ -133,19 +133,23 @@ pipeline {
 									
 									
 									        def stages = [:]
-											stages["UC01"] = {
-												
-												sh 'echo ---------------- $NODE_NAME'
-												sh 'echo +++++ ${env.custom_var}'
-												sh './test.sh UC01_run'
-												
+											stages["UC01"] = {												
+												node('slave1') {
+													dir("${env.custom_var}"){
+														sh 'echo ---------------- $NODE_NAME'
+														sh 'echo +++++ ${env.custom_var}'
+														sh './test.sh UC01_run'
+													}
+												}												
 											}
-											stages["UC02"] = {
-												
-												sh 'echo ---------------- $NODE_NAME'
-												sh 'echo +++++ ${env.custom_var}'
-												sh './test.sh UC02_run'
-												
+											stages["UC02"] = {												
+												node('slave1') {
+													dir("${env.custom_var}"){
+														sh 'echo ---------------- $NODE_NAME'
+														sh 'echo +++++ ${env.custom_var}'
+														sh './test.sh UC01_run'
+													}
+												}												
 											}
 									
 									parallel(stages)								
