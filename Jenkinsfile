@@ -137,7 +137,7 @@ pipeline {
 												
 
 														sh 'echo ---------------- $NODE_NAME'
-
+														sh './test.sh UC01_run'
 
 																								
 											}
@@ -145,7 +145,7 @@ pipeline {
 
 
 														sh 'echo ---------------- $NODE_NAME'
-
+														sh './test.sh UC02_run'
 													
 																								
 											}
