@@ -44,12 +44,12 @@ pipeline {
     choice(
       name: 'P_UC01',
       description: '',
-      choices: ['NULL', 'slave1'] as List
+      choices: ['NULL', 'slave1', 'slave2'] as List
     )	
     choice(
       name: 'P_UC02',
       description: '',
-      choices: ['slave1', 'NULL'] as List
+      choices: ['slave1', 'NULL', 'slave2'] as List
     )	
   } // }
   agent none
