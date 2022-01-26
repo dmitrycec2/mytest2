@@ -133,20 +133,22 @@ pipeline {
 									
 										stage('Testt') {
 											parallel uc01: {
-												
+												node('slave1') {
 														dir("${env.custom_var}"){
-
+															if(P_UC01.toString()=='slave1'){
 															sh './test.sh UC01_run'
+															}
 														}
-												
+												}
 											},
 											uc02: {
-												
+												node('slave1') {
 														dir("${env.custom_var}"){
-
+															if(P_UC02.toString()=='slave1'){
 															sh './test.sh UC02_run'
+															}
 														}
-												
+												}
 											}
 										}									
 
