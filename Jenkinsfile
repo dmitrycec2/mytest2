@@ -1,37 +1,34 @@
 def BRANCH_NAME = 'main'
-
-
-
-
 def prepareStages(String name) {
-def tasks = [:]
-tasks["task_1"] = {
-  stage ("task_1"){    
-    node("${name}") {
-		dir("${env.custom_var}"){
-			if(P_UC01.toString()=="${name}"){
-				sh 'echo -----------------1'
-				sh './test.sh UC01_run'
-			}		
+	def tasks = [:]
+	tasks["task_1"] = {
+	  stage ("task_1"){    
+		node("${name}") {
+			dir("${env.custom_var}"){
+				if(P_UC01.toString()=="${name}"){
+					sh 'echo -----------------1'
+					sh './test.sh UC01_run'
+				}		
 
-		}
-    }
-  }
-}
-tasks["task_2"] = {
-  stage ("task_2"){    
-    node("${name}") {  
-		dir("${env.custom_var}"){
-			if(P_UC02.toString()=="${name}"){
-				sh 'echo -----------------1'
-				sh './test.sh UC02_run'
 			}
 		}
-    }
-  }
-}
+	  }
+	}
+	tasks["task_2"] = {
+	  stage ("task_2"){    
+		node("${name}") {  
+			dir("${env.custom_var}"){
+				if(P_UC02.toString()=="${name}"){
+					sh 'echo -----------------1'
+					sh './test.sh UC02_run'
+				}
+			}
+		}
+	  }
+	}
 return tasks
 }
+
 pipeline {
   parameters { // {
     choice(
@@ -84,10 +81,8 @@ pipeline {
 				sh 'chmod +x build.sh'
 				sh 'chmod +x entrypoint.sh'
 				sh './build.sh'
-			}
-		
-		}
-	
+			}		
+		}	
 	}
 	stage('Build On slave2') {
 	when {
@@ -109,12 +104,9 @@ pipeline {
 				sh 'chmod +x build.sh'
 				sh 'chmod +x entrypoint.sh'
 				sh 'build.sh'
-				sh './build.sh'
-				
-			}
-		
-		}
-	
+				sh './build.sh'				
+			}		
+		}	
 	}
 	
 	
@@ -129,29 +121,20 @@ pipeline {
 				}
 			    agent {
                    label 'slave1'
-                }
-				
-					steps {	
-						
-							script {
-									echo "Current workspace is ${env.WORKSPACE}"
-									def workspace = "${env.WORKSPACE}"
-									echo "Current workspace is ${workspace}"
-									echo "Current workspace "+workspace
-									env.custom_var=workspace
-									currtasks =  prepareStages("slave1")
-										stage('Testt') {
-											parallel currtasks
-										}									
-
-									
-														
-								
-								
-							}
-						
-					
-					}
+                }				
+				steps {						
+					script {
+						echo "Current workspace is ${env.WORKSPACE}"
+						def workspace = "${env.WORKSPACE}"
+						echo "Current workspace is ${workspace}"
+						echo "Current workspace "+workspace
+						env.custom_var=workspace
+						currtasks =  prepareStages("slave1")
+							stage('Testt') {
+								parallel currtasks
+							}					
+					}	
+				}
 			}
 			
 			stage('Test On slave2') {
@@ -162,13 +145,19 @@ pipeline {
 					}        
 				}
 			    agent {
-                   label 'slave1'
+                   label 'slave2'
                 }
 				steps {				
 					script {					
-						if(P_UC02.toString()!='NULL'){			  
-						  sh './test.sh UC02_run'
-						}
+						echo "Current workspace is ${env.WORKSPACE}"
+						def workspace = "${env.WORKSPACE}"
+						echo "Current workspace is ${workspace}"
+						echo "Current workspace "+workspace
+						env.custom_var=workspace
+						currtasks =  prepareStages("slave2")
+							stage('Testt') {
+								parallel currtasks
+							}	
 					}
 				
 				}
