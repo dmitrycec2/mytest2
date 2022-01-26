@@ -3,17 +3,21 @@ def tasks = [:]
 
 tasks["task_1"] = {
   stage ("task_1"){    
-    node('slave1') {  
-        sh 'echo ---------------- $NODE_NAME'
-		sh './test.sh UC01_run'
+    node('slave1') {
+		dir("test_2_slaves_docker_parallel_jenkinsfile"){
+			sh 'echo ---------------- $NODE_NAME'
+			sh './test.sh UC01_run'
+		}
     }
   }
 }
 tasks["task_2"] = {
   stage ("task_2"){    
     node('slave1') {  
-        sh 'echo ------------- $NODE_NAME'
-		sh './test.sh UC02_run'
+		dir("test_2_slaves_docker_parallel_jenkinsfile"){
+			sh 'echo ---------------- $NODE_NAME'
+			sh './test.sh UC02_run'
+		}
     }
   }
 }
@@ -120,14 +124,7 @@ pipeline {
 						
 							script {					
 								
-								parallel([
-                                  'Test 1': {  
-									sh 'echo ---------------- $NODE_NAME'
-									sh './test.sh UC01_run' },
-                                  'Test 2': { 
-								  	sh 'echo ---------------- $NODE_NAME'
-									sh './test.sh UC02_run' }
-								])							
+									parallel tasks								
 								
 								
 							}
