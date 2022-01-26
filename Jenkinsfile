@@ -5,13 +5,6 @@ tasks["task_1"] = {
   stage ("task_1"){    
     node('slave1') {  
         sh 'echo ---------------- $NODE_NAME'
-				scmInfo = checkout scm
-				f = fileExists 'README.md'
-				echo "f=${f}"
-				sh 'chmod +x test.sh'
-				sh 'chmod +x run.sh'
-				sh 'chmod +x build.sh'
-				sh 'chmod +x entrypoint.sh'
 		sh './test.sh UC01_run'
     }
   }
@@ -20,13 +13,6 @@ tasks["task_2"] = {
   stage ("task_2"){    
     node('slave1') {  
         sh 'echo ------------- $NODE_NAME'
-						scmInfo = checkout scm
-				f = fileExists 'README.md'
-				echo "f=${f}"
-				sh 'chmod +x test.sh'
-				sh 'chmod +x run.sh'
-				sh 'chmod +x build.sh'
-				sh 'chmod +x entrypoint.sh'
 		sh './test.sh UC02_run'
     }
   }
@@ -134,7 +120,14 @@ pipeline {
 						
 							script {					
 								
-									parallel tasks								
+								parallel([
+                                  'Test 1': {  
+									sh 'echo ---------------- $NODE_NAME'
+									sh './test.sh UC01_run' },
+                                  'Test 2': { 
+								  	sh 'echo ---------------- $NODE_NAME'
+									sh './test.sh UC02_run' }
+								])							
 								
 								
 							}
