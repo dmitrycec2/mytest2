@@ -1,9 +1,13 @@
 def BRANCH_NAME = 'main'
-def tasks = [:]
 
+
+
+
+def prepareStages(String name) {
+def tasks = [:]
 tasks["task_1"] = {
   stage ("task_1"){    
-    node('slave1') {
+    node('${name}') {
 		dir("${env.custom_var}"){
 			sh 'echo ---------------- $NODE_NAME'
 
@@ -14,7 +18,7 @@ tasks["task_1"] = {
 }
 tasks["task_2"] = {
   stage ("task_2"){    
-    node('slave1') {  
+    node('${name}') {  
 		dir("${env.custom_var}"){
 			sh 'echo ---------------- $NODE_NAME'
 
@@ -22,6 +26,8 @@ tasks["task_2"] = {
 		}
     }
   }
+}
+return tasks
 }
 pipeline {
   parameters { // {
@@ -130,28 +136,9 @@ pipeline {
 									echo "Current workspace is ${workspace}"
 									echo "Current workspace "+workspace
 									env.custom_var=workspace
-									
+									currtasks =  prepareStages("slave1")
 										stage('Testt') {
-											parallel uc01: {
-												node('slave1') {
-														dir("${env.custom_var}"){
-															if(P_UC01.toString()=='slave1'){
-																sh 'echo -----------------1'
-																sh './test.sh UC01_run'
-															}
-														}
-												}
-											},
-											uc02: {
-												node('slave1') {
-														dir("${env.custom_var}"){
-															if(P_UC02.toString()=='slave1'){
-																sh 'echo -----------------2'
-																sh './test.sh UC02_run'
-															}
-														}
-												}
-											}
+											parallel currtasks
 										}									
 
 									
