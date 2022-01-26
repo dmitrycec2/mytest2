@@ -137,6 +137,7 @@ pipeline {
 														dir("${env.custom_var}"){
 															if(P_UC01.toString()=='slave1'){
 																sh 'echo -----------------1'
+																sh './test.sh UC01_run'
 															}
 														}
 												}
@@ -146,6 +147,7 @@ pipeline {
 														dir("${env.custom_var}"){
 															if(P_UC02.toString()=='slave1'){
 																sh 'echo -----------------2'
+																sh './test.sh UC02_run'
 															}
 														}
 												}
