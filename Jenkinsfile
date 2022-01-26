@@ -131,7 +131,24 @@ pipeline {
 									echo "Current workspace "+workspace
 									env.custom_var=workspace
 									
-									
+										stage('Testt') {
+											parallel uc01: {
+												node('slave1') {
+														dir("${env.custom_var}"){
+
+															sh './test.sh UC01_run'
+														}
+												}
+											},
+											uc02: {
+												node('slave1') {
+														dir("${env.custom_var}"){
+
+															sh './test.sh UC02_run'
+														}
+												}
+											}
+										}									
 
 									
 									parallel tasks					
