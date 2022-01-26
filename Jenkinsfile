@@ -103,7 +103,6 @@ pipeline {
 				sh 'chmod +x run.sh'
 				sh 'chmod +x build.sh'
 				sh 'chmod +x entrypoint.sh'
-				sh 'build.sh'
 				sh './build.sh'				
 			}		
 		}	
