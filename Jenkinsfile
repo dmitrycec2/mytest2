@@ -9,9 +9,11 @@ tasks["task_1"] = {
   stage ("task_1"){    
     node("${name}") {
 		dir("${env.custom_var}"){
-			sh 'echo ---------------- $NODE_NAME'
+			if(P_UC01.toString()=="${name}"){
+				sh 'echo -----------------1'
+				sh './test.sh UC01_run'
+			}		
 
-			sh './test.sh UC01_run'
 		}
     }
   }
@@ -20,9 +22,10 @@ tasks["task_2"] = {
   stage ("task_2"){    
     node("${name}") {  
 		dir("${env.custom_var}"){
-			sh 'echo ---------------- $NODE_NAME'
-
-			sh './test.sh UC02_run'
+			if(P_UC02.toString()=="${name}"){
+				sh 'echo -----------------1'
+				sh './test.sh UC02_run'
+			}
 		}
     }
   }
