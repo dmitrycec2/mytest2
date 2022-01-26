@@ -4,7 +4,7 @@ def tasks = [:]
 tasks["task_1"] = {
   stage ("task_1"){    
     node('slave1') {
-		dir("test_2_slaves_docker_parallel_jenkinsfile"){
+		dir("/home/dmitry/jenkins/workspace/test_2_slaves_docker_parallel_jenkinsfile/"){
 			sh 'echo ---------------- $NODE_NAME'
 			sh './test.sh UC01_run'
 		}
@@ -14,7 +14,7 @@ tasks["task_1"] = {
 tasks["task_2"] = {
   stage ("task_2"){    
     node('slave1') {  
-		dir("test_2_slaves_docker_parallel_jenkinsfile"){
+		dir("/home/dmitry/jenkins/workspace/test_2_slaves_docker_parallel_jenkinsfile/"){
 			sh 'echo ---------------- $NODE_NAME'
 			sh './test.sh UC02_run'
 		}
