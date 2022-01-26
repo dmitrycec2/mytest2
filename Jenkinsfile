@@ -124,7 +124,7 @@ pipeline {
 						
 							script {
 									echo "Current workspace is ${env.WORKSPACE}"
-									def workspace = ${env.WORKSPACE}
+									def workspace = "${env.WORKSPACE}"
 									parallel tasks								
 								
 								
