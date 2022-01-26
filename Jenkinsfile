@@ -134,20 +134,20 @@ pipeline {
 									
 									        def stages = [:]
 											stages["UC01"] = {												
-												node('slave1') {
+												
 
 														sh 'echo ---------------- $NODE_NAME'
 
 
-												}												
+																								
 											}
 											stages["UC02"] = {												
-												node('slave1') {
+
 
 														sh 'echo ---------------- $NODE_NAME'
 
 													
-												}												
+																								
 											}
 									
 									parallel stages						
